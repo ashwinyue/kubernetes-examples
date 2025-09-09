@@ -10,8 +10,8 @@ package v1beta1
 import (
 	"net/http"
 
-	v1beta1 "github.com/superproj/k8sdemo/resourcedefinition/apps/v1beta1"
-	"github.com/superproj/k8sdemo/resourcedefinition/generated/clientset/versioned/scheme"
+	v1beta1 "github.com/onexstack/kubernetes-examples/resourcedefinition/apps/v1beta1"
+	"github.com/onexstack/kubernetes-examples/resourcedefinition/generated/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 

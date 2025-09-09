@@ -13,7 +13,7 @@ package v1beta1
 import (
 	unsafe "unsafe"
 
-	apps "github.com/superproj/k8sdemo/resourcedefinition/apps"
+	apps "github.com/onexstack/kubernetes-examples/resourcedefinition/apps"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	conversion "k8s.io/apimachinery/pkg/conversion"
 	runtime "k8s.io/apimachinery/pkg/runtime"

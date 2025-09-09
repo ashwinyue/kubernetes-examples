@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/pflag"
-	"github.com/superproj/k8sdemo/featuregates/feature"
+	"github.com/onexstack/kubernetes-examples/featuregates/feature"
 )
 
 func main() {

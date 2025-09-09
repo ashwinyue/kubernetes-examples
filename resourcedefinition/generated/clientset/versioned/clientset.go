@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"net/http"
 
-	appsv1beta1 "github.com/superproj/k8sdemo/resourcedefinition/generated/clientset/versioned/typed/apps/v1beta1"
+	appsv1beta1 "github.com/onexstack/kubernetes-examples/resourcedefinition/generated/clientset/versioned/typed/apps/v1beta1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
