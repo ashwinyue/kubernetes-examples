@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -78,7 +77,7 @@ func main() {
 
 	// 统计协程
 	var stats Stats
-	stats.Store = store
+	stats.store = store
 	go func() {
 		ticker := time.NewTicker(10 * time.Second)
 		for {
