@@ -10,7 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -22,7 +22,8 @@ const finalizerName = "podmanager.mycompany.com/finalizer"
 // PodManagerReconciler reconciles a PodManager object
 type PodManagerReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme   *runtime.Scheme
+	Recorder record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=apps.mycompany.com,resources=podmanagers,verbs=get;list;watch;create;update;patch;delete
@@ -81,28 +82,34 @@ func (r *PodManagerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 			pod := newPodForPodManager(podManager, i)
 			if err := r.Create(ctx, pod); err != nil {
 				log.Error(err, "Failed to create Pod", "pod", pod.Name)
-				r.Eventf(podManager, corev1.EventTypeWarning, "Failed", "Failed to create pod %s: %v", pod.Name, err)
+				r.Recorder.Eventf(podManager, corev1.EventTypeWarning, "Failed", "Failed to create pod %s: %v", pod.Name, err)
 				return ctrl.Result{}, err
 			}
-			r.Eventf(podManager, corev1.EventTypeNormal, "Created", "Created pod %s", pod.Name)
+			r.Recorder.Eventf(podManager, corev1.EventTypeNormal, "Created", "Created pod %s", pod.Name)
 		}
 	} else if currentReplicas > desiredReplicas {
 		// Delete extra Pods
 		for i := desiredReplicas; i < currentReplicas; i++ {
 			if err := r.Delete(ctx, &podList.Items[i]); err != nil {
 				log.Error(err, "Failed to delete Pod", "pod", podList.Items[i].Name)
-				r.Eventf(podManager, corev1.EventTypeWarning, "Failed", "Failed to delete pod %s: %v", podList.Items[i].Name, err)
+				r.Recorder.Eventf(podManager, corev1.EventTypeWarning, "Failed", "Failed to delete pod %s: %v", podList.Items[i].Name, err)
 				return ctrl.Result{}, err
 			}
-			r.Eventf(podManager, corev1.EventTypeNormal, "Deleted", "Deleted pod %s", podList.Items[i].Name)
+			r.Recorder.Eventf(podManager, corev1.EventTypeNormal, "Deleted", "Deleted pod %s", podList.Items[i].Name)
 		}
 	}
 
 	// 6. Update Status
 	readyCount := int32(0)
 	for _, pod := range podList.Items {
-		if pod.Status.Phase == corev1.PodRunning && pod.Status.PodReadyCondition.Status == corev1.ConditionTrue {
-			readyCount++
+		if pod.Status.Phase == corev1.PodRunning {
+			// Check if Pod is ready
+			for _, cond := range pod.Status.Conditions {
+				if cond.Type == corev1.PodReady && cond.Status == corev1.ConditionTrue {
+					readyCount++
+					break
+				}
+			}
 		}
 	}
 
@@ -158,7 +165,7 @@ func (r *PodManagerReconciler) handleFinalizer(ctx context.Context, podManager *
 					return ctrl.Result{}, err
 				}
 			} else {
-				r.Eventf(podManager, corev1.EventTypeNormal, "Deleting", "Deleting pod %s", pod.Name)
+				r.Recorder.Eventf(podManager, corev1.EventTypeNormal, "Deleting", "Deleting pod %s", pod.Name)
 			}
 		}
 
@@ -177,6 +184,7 @@ func (r *PodManagerReconciler) handleFinalizer(ctx context.Context, podManager *
 
 // SetupWithManager sets up the controller with the Manager
 func (r *PodManagerReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	r.Recorder = mgr.GetEventRecorderFor("podmanager-controller")
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&appsv1.PodManager{}).
 		Owns(&corev1.Pod{}).
