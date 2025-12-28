@@ -56,7 +56,7 @@ func main() {
 	}
 
 	// change the 'margherita' price
-	status.(map[string]interface{})["cost"] = 6.50
+	status.(map[string]interface{})["cost"] = 6.51
 	res.Object["status"] = status
 
 	// update the 'margherita' custom resource with the new price
