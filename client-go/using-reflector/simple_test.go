@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"testing"
 	"time"
 
 	"k8s.io/apimachinery/pkg/fields"
@@ -12,21 +11,19 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func main() {
+// TestReflectorSimple 测试 Reflector 的基本功能
+func TestReflectorSimple(t *testing.T) {
 	// 加载配置
 	config, err := clientcmd.BuildConfigFromFlags("", "")
 	if err != nil {
-		panic(err)
+		t.Skipf("无法加载 kubeconfig: %v", err)
 	}
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		panic(err)
+		t.Fatalf("创建 clientset 失败: %v", err)
 	}
 
-	fmt.Println("=" + "========================================")
-	fmt.Println("Reflector 简单测试")
-	fmt.Println("=" + "========================================")
-	fmt.Println()
+	t.Log("开始测试 Reflector 基本功能")
 
 	// 创建 ListWatch
 	lw := cache.NewListWatchFromClient(
@@ -47,35 +44,30 @@ func main() {
 	go reflector.Run(stopCh)
 
 	// 等待同步
-	fmt.Println("等待 Reflector 同步...")
+	t.Log("等待 Reflector 同步...")
 	time.Sleep(3 * time.Second)
 
 	// 检查缓存
 	keys := store.ListKeys()
-	fmt.Printf("\n✅ Reflector 已启动\n")
-	fmt.Printf("📊 缓存的 Pod 数量: %d\n", len(keys))
-	fmt.Printf("\n缓存的 Pod 列表:\n")
-	for i, key := range keys {
-		if i >= 10 {
-			fmt.Printf("... (还有 %d 个)\n", len(keys)-10)
-			break
-		}
-		fmt.Printf("  %d. %s\n", i+1, key)
+	t.Logf("Reflector 已启动，缓存的 Pod 数量: %d", len(keys))
+
+	// 验证至少缓存了一些 Pod
+	if len(keys) == 0 {
+		t.Error("期望缓存至少一个 Pod，但缓存为空")
 	}
 
-	// 运行 10 秒后停止
-	fmt.Println("\n⏱️  运行 10 秒...")
-	time.Sleep(10 * time.Second)
+	// 验证 Key 格式
+	for _, key := range keys {
+		if key == "" {
+			t.Error("缓存的 Key 不应为空")
+		}
+	}
+
+	// 运行一段时间后停止
+	time.Sleep(2 * time.Second)
 
 	close(stopCh)
 	time.Sleep(1 * time.Second)
 
-	// 再次检查缓存
-	keys = store.ListKeys()
-	fmt.Printf("\n📊 10 秒后缓存的 Pod 数量: %d\n", len(keys))
-
-	fmt.Println()
-	fmt.Println("=" + "========================================")
-	fmt.Println("✅ Reflector 测试完成")
-	fmt.Println("=" + "========================================")
+	t.Log("Reflector 测试完成")
 }
