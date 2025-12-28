@@ -47,7 +47,7 @@ func main() {
 	store := cache.NewStore(cache.MetaNamespaceKeyFunc)
 
 	reflector := cache.NewReflector(lw, &corev1.Pod{}, store, 10*time.Second)
-	fmt.Println(reflector.Name)
+	fmt.Println("Reflector started")
 
 	// 启动Reflector，开始监听Kubernetes API服务器上Pod资源对象的变更事件
 	stopCh := make(chan struct{})
