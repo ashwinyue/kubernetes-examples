@@ -11,8 +11,8 @@ import (
 	"context"
 	"time"
 
-	v1beta1 "github.com/onexstack/kubernetes-examples/resourcedefinition/apps/v1beta1"
-	scheme "github.com/onexstack/kubernetes-examples/resourcedefinition/generated/clientset/versioned/scheme"
+	v1beta1 "github.com/ashwinyue/kubernetes-examples/resourcedefinition/apps/v1beta1"
+	scheme "github.com/ashwinyue/kubernetes-examples/resourcedefinition/generated/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"

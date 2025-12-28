@@ -1,0 +1,7 @@
+apiVersion: apps.mycompany.com/v1
+kind: PodManager
+metadata:
+  name: my-pod-manager
+spec:
+  replicas: 3
+  image: nginx:1.21

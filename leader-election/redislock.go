@@ -13,7 +13,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	leaderelection "k8s.io/client-go/tools/leaderelection"
 
-	"github.com/onexstack/kubernetes-examples/leader-election/redislock"
+	"github.com/ashwinyue/kubernetes-examples/leader-election/redislock"
 )
 
 func main() {

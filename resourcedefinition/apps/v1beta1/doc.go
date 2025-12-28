@@ -6,10 +6,10 @@
 
 // +k8s:deepcopy-gen=package
 // +k8s:defaulter-gen=TypeMeta
-// +k8s:defaulter-gen-input=github.com/onexstack/kubernetes-examples/resourcedefinition/apps/v1beta1
-// +k8s:conversion-gen=github.com/onexstack/kubernetes-examples/resourcedefinition/apps
+// +k8s:defaulter-gen-input=github.com/ashwinyue/kubernetes-examples/resourcedefinition/apps/v1beta1
+// +k8s:conversion-gen=github.com/ashwinyue/kubernetes-examples/resourcedefinition/apps
 // +k8s:conversion-gen=k8s.io/kubernetes/pkg/apis/core
-// +k8s:conversion-gen-external-types=github.com/onexstack/kubernetes-examples/resourcedefinition/apps/v1beta1
+// +k8s:conversion-gen-external-types=github.com/ashwinyue/kubernetes-examples/resourcedefinition/apps/v1beta1
 
 // Package v1beta1 is the v1beta1 version of the API.
 package v1beta1

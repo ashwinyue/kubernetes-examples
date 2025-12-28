@@ -1,0 +1,97 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
+  name: podmanagers.apps.mycompany.com
+spec:
+  group: apps.mycompany.com
+  names:
+    kind: PodManager
+    listKind: PodManagerList
+    plural: podmanagers
+    shortNames:
+    - pm
+    - pmgr
+    singular: podmanager
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: PodManager is the Schema for the podmanagers API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: PodManagerSpec defines the desired state of PodManager
+            properties:
+              image:
+                description: Image is the container image to use for Pods.
+                type: string
+              replicas:
+                default: 3
+                description: Replicas is the desired number of Pod replicas.
+                format: int32
+                minimum: 1
+                type: integer
+            required:
+            - image
+            - replicas
+            type: object
+          status:
+            description: PodManagerStatus defines the observed state of PodManager
+            properties:
+              conditions:
+                description: Conditions represent the latest available observations
+                  of PodManager's state.
+                items:
+                  description: PodCondition describes the state of a PodManager at
+                    a certain point.
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: Human-readable message indicating details about last
+                        transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type of condition.
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - status
+                  - type
+                  type: object
+                type: array
+              currentReplicas:
+                description: CurrentReplicas is the total number of Pods.
+                format: int32
+                type: integer
+              readyReplicas:
+                description: ReadyReplicas is the number of Pods that are ready.
+                format: int32
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

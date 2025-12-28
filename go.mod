@@ -1,4 +1,4 @@
-module github.com/onexstack/kubernetes-examples
+module github.com/ashwinyue/kubernetes-examples
 
 go 1.22.0
 

@@ -19,7 +19,7 @@ runtimeConfig:
 networking:
   # 绑定到宿主机上的地址，如果需要外部访问请设置为宿主机 IP
   # 注意：这里需要设置为你的宿主机 IP 地址
-  apiServerAddress: 10.37.83.200
+  # apiServerAddress: 127.0.0.1
   # 绑定到宿主机上的端口，如果建多个集群或者宿主机已经占用需要修改为不同的端口
   apiServerPort: 16443
   # 设置 Pod 子网

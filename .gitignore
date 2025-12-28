@@ -1,0 +1,10 @@
+# Go 编译产物
+*.exe
+*.test
+*.out
+
+# IDE 临时文件
+.idea/
+*.swp
+*.swo
+.DS_Store
