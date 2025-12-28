@@ -6,6 +6,16 @@
 
 这是一个完整的 Kubernetes 二次开发学习资源库，包含丰富的实战示例和详细的学习文档。通过本项目的学习，你将掌握 client-go、CRD、Operator、Webhook、Scheduler 扩展等 K8s 二次开发的核心技能。
 
+### 📝 原作者与来源
+
+本项目基于 **onexstack/kubernetes-examples** 进行学习、整理和扩展。
+
+- **原作者**: [onexstack](https://github.com/onexstack)
+- **原始仓库**: https://github.com/onexstack/kubernetes-examples.git
+- **当前仓库**: https://github.com/ashwinyue/kubernetes-examples.git（学习笔记和扩展版）
+
+感谢原作者提供的优质学习资源！本仓库在原项目基础上增加了详细的学习路径文档（LEARNING_PATH.md）、完整的示例 README、以及额外的实战代码。
+
 ## 🎯 学习目标
 
 - ✅ 掌握 client-go 四种客户端的使用
