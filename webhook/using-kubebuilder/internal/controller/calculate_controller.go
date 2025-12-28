@@ -25,7 +25,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	mathv1 "github.com/superproj/webhook-with-kubebuilder/api/v1"
+	mathv1 "github.com/ashwinyue/kubernetes-examples/webhook/using-kubebuilder/api/v1"
 )
 
 // CalculateReconciler reconciles a Calculate object

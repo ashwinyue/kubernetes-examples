@@ -1,4 +1,4 @@
-module github.com/superproj/webhook-with-kubebuilder
+module github.com/ashwinyue/kubernetes-examples/webhook/using-kubebuilder
 
 go 1.22.0
 
