@@ -1,21 +1,20 @@
 package main
 
 import (
-	"encoding/json" // 用于处理 JSON 格式的编码和解码
+	"encoding/json"
 	"fmt"
-	"io/ioutil" // 用于读取输入输出流
-	"net/http"  // HTTP 客户端和服务器库
+	"io/ioutil"
+	"net/http"
 	"strings"
 
-	"github.com/golang/glog"                                      // 日志库
-	admissionv1 "k8s.io/api/admission/v1"                         // Kubernetes Admission API
-	admissionregistrationv1 "k8s.io/api/admissionregistration/v1" // Admission Registration API
-	appsv1 "k8s.io/api/apps/v1"                                   // Apps API
-	corev1 "k8s.io/api/core/v1"                                   // Core API
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"                 // 元数据类型
-	"k8s.io/apimachinery/pkg/runtime"                             // Kubernetes 运行时相关类型
-	"k8s.io/apimachinery/pkg/runtime/serializer"                  // 编解码器相关
-	"k8s.io/kubernetes/pkg/apis/core/v1"                          // Core API
+	"github.com/golang/glog"
+	admissionv1 "k8s.io/api/admission/v1"
+	admissionregistrationv1 "k8s.io/api/admissionregistration/v1"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/serializer"
 )
 
 var (
@@ -95,9 +94,9 @@ type patchOperation struct {
 
 // 初始化函数
 func init() {
-	_ = corev1.AddToScheme(runtimeScheme)                  // 将 Core API 注册到运行时方案
-	_ = admissionregistrationv1.AddToScheme(runtimeScheme) // 将 Admission Registration API 注册到运行时方案
-	_ = v1.AddToScheme(runtimeScheme)                      // 将 Apps API 注册到运行时方案
+	_ = corev1.AddToScheme(runtimeScheme)
+	_ = admissionregistrationv1.AddToScheme(runtimeScheme)
+	_ = appsv1.AddToScheme(runtimeScheme)
 }
 
 // 校验是否需要 Admission
