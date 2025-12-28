@@ -9,45 +9,73 @@ import (
 )
 
 func main() {
-
-	// 创建一个DeltaFIFO对象
-	fifo := cache.NewDeltaFIFO(cache.MetaNamespaceKeyFunc, nil)
+	// 创建一个DeltaFIFO对象（使用新 API）
+	fifo := cache.NewDeltaFIFOWithOptions(cache.DeltaFIFOOptions{
+		KeyFunction: cache.MetaNamespaceKeyFunc,
+	})
 
 	dep1 := &appsv1.Deployment{ObjectMeta: metav1.ObjectMeta{Name: "dep1", Namespace: metav1.NamespaceDefault}}
 	dep2 := &appsv1.Deployment{ObjectMeta: metav1.ObjectMeta{Name: "dep2", Namespace: metav1.NamespaceDefault}}
+
+	fmt.Println("========================================")
+	fmt.Println("DeltaFIFO 示例")
+	fmt.Println("========================================")
+	fmt.Println()
+
 	// 1. 将对象添加事件放入 DeltaFIFO 中
+	fmt.Println("步骤 1: 添加 dep1 和 dep2")
 	_ = fifo.Add(dep1)
 	_ = fifo.Add(dep2)
+	fmt.Printf("Keys 数量: %d\n", len(fifo.ListKeys()))
+	fmt.Println()
 
 	// 2. 将对象变更事件放入 DeltaFIFO 中
+	fmt.Println("步骤 2: 更新 dep1 为 dep1-modified")
 	dep1.Name = "dep1-modified"
 	_ = fifo.Update(dep1)
+	fmt.Printf("Keys 数量: %d\n", len(fifo.ListKeys()))
+	fmt.Println()
 
 	// 3. 以列表形式返回所有 Key
-	fmt.Println(fifo.ListKeys())
+	fmt.Println("步骤 3: 列出所有 Keys")
+	fmt.Printf("Keys: %v\n", fifo.ListKeys())
+	fmt.Println()
 
 	// 4. 将对象删除事件放入 DeltaFIFO 中
+	fmt.Println("步骤 4: 删除 dep1")
 	_ = fifo.Delete(dep1)
+	fmt.Printf("Keys 数量: %d\n", len(fifo.ListKeys()))
+	fmt.Println()
 
-	// 5. "不断"从 DeltaFIFO 中 Pop 资源对象。
-	// 当中有个回调函数，作用是分别不同事件所有做的不同回调方法，这里只打印了一条信息
-	for {
-		_, _ = fifo.Pop(func(obj interface{}, isInInitialList bool) error {
+	// 5. 从 DeltaFIFO 中 Pop 所有资源对象
+	fmt.Println("步骤 5: Pop 处理所有事件")
+	fmt.Println("----------------------------------------")
+
+	// 循环处理所有事件，直到队列为空
+	for len(fifo.ListKeys()) > 0 {
+		_, _ = fifo.Pop(func(obj any, isInInitialList bool) error {
 			for _, delta := range obj.(cache.Deltas) {
 				deploy := delta.Object.(*appsv1.Deployment)
 
-				// 这里进行回调，区分不同事件，可以执行业务逻辑 ex: 统计次数 加入本地缓存等操作。
+				// 区分不同事件，执行不同回调
 				switch delta.Type {
 				case cache.Added:
-					fmt.Printf("Added: %s/%s\n", deploy.Namespace, deploy.Name)
+					fmt.Printf("Added:    %s/%s\n", deploy.Namespace, deploy.Name)
 				case cache.Updated:
-					fmt.Printf("Updated: %s/%s\n", deploy.Namespace, deploy.Name)
+					fmt.Printf("Updated:  %s/%s\n", deploy.Namespace, deploy.Name)
 				case cache.Deleted:
-					fmt.Printf("Deleted: %s/%s\n", deploy.Namespace, deploy.Name)
+					fmt.Printf("Deleted:  %s/%s\n", deploy.Namespace, deploy.Name)
 				}
 			}
 
 			return nil
 		})
 	}
+
+	fmt.Println("----------------------------------------")
+	fmt.Printf("Keys 数量: %d\n", len(fifo.ListKeys()))
+	fmt.Println()
+	fmt.Println("========================================")
+	fmt.Println("✅ DeltaFIFO 示例完成")
+	fmt.Println("========================================")
 }

@@ -28,6 +28,7 @@ func CreateFrobber(ctx context.Context, frobber *Frobber) error {
 	}
 	// 假设用 "frobber1" 作为标识符存储
 	frobberStorage["frobber1"] = frobber
+	return nil
 }
 
 // GetFrobber 获取 Frobber，确保新旧参数都是可用的
@@ -53,24 +54,24 @@ func UpdateFrobber(ctx context.Context, after *Frobber) error {
 	}
 
 	// 检查旧版参数，如果存在则添加到新版参数中
-	if newFrobber.Param != "" {
+	if after.Param != "" {
 		// 如果 Params 为空，转移旧版参数到新版参数
 		if len(existingFrobber.Params) == 0 {
-			existingFrobber.Params = append(existingFrobber.Params, newFrobber.Param)
+			existingFrobber.Params = append(existingFrobber.Params, after.Param)
 		} else {
 			// 如果 Params 不为空且与新 Param 不相等，返回错误
-			if newFrobber.Param != existingFrobber.Params[0] {
+			if after.Param != existingFrobber.Params[0] {
 				return fmt.Errorf("param is not equal to params[0]")
 			}
 		}
 	}
 
 	// 更新现有字段
-	existingFrobber.Height = newFrobber.Height
-	existingFrobber.Width = newFrobber.Width
+	existingFrobber.Height = after.Height
+	existingFrobber.Width = after.Width
 
 	// 更新新版参数
-	existingFrobber.Params = newFrobber.Params
+	existingFrobber.Params = after.Params
 
 	return nil
 }

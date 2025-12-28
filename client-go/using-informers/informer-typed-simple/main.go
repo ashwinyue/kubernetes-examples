@@ -95,7 +95,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	list, err := cmInformer.Lister().List(selector)
+	list, err := factory.Core().V1().ConfigMaps().Lister().List(selector)
 	if err != nil {
 		panic(err.Error())
 	}
