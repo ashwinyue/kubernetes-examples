@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -37,7 +38,7 @@ func TestReflectorSimple(t *testing.T) {
 	store := cache.NewStore(cache.MetaNamespaceKeyFunc)
 
 	// 创建 Reflector，10 秒 Resync
-	reflector := cache.NewReflector(lw, &metav1.Pod{}, store, 10*time.Second)
+	reflector := cache.NewReflector(lw, &corev1.Pod{}, store, 10*time.Second)
 
 	// 启动 Reflector
 	stopCh := make(chan struct{})

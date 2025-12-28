@@ -94,14 +94,14 @@ func createConfigMap(dc dynamic.Interface) {
 	}
 
 	obj := &unstructured.Unstructured{
-		Object: map[string]interface{}{
+		Object: map[string]any{
 			"apiVersion": "v1",
 			"kind":       "ConfigMap",
-			"metadata": map[string]interface{}{
+			"metadata": map[string]any{
 				"name":      "example-config",
 				"namespace": "default",
 			},
-			"data": map[string]interface{}{
+			"data": map[string]any{
 				"app.name":    "dynamic-client",
 				"app.version": "1.0.0",
 			},
@@ -138,7 +138,7 @@ func updateConfigMap(dc dynamic.Interface) {
 	fmt.Printf("更新前: %v\n", obj.Object["data"])
 
 	// 更新数据
-	data := obj.Object["data"].(map[string]interface{})
+	data := obj.Object["data"].(map[string]any)
 	data["app.version"] = "2.0.0"
 	obj.Object["data"] = data
 
